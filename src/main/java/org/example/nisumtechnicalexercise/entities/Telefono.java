@@ -1,5 +1,6 @@
 package org.example.nisumtechnicalexercise.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.persistence.Column;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class Telefono {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
+    @JsonBackReference
     private Usuario usuario;
 }
 
