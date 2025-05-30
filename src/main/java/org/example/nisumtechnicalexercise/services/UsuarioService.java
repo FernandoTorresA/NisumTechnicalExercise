@@ -6,4 +6,6 @@ import java.util.List;
 public interface UsuarioService {
 
     List<Usuario> getAll();
+
+    Usuario createUser(Usuario usuario);
 }
