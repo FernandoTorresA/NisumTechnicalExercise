@@ -1,11 +1,21 @@
 package org.example.nisumtechnicalexercise.services;
 
+import org.example.nisumtechnicalexercise.entities.ApiResponse;
 import org.example.nisumtechnicalexercise.entities.Usuario;
-import java.util.List;
 
 public interface UsuarioService {
 
-    List<Usuario> getAll();
+    ApiResponse getAll();
 
-    Usuario createUser(Usuario usuario);
+    ApiResponse createUser(Usuario usuario);
+
+    ApiResponse deleteUser(String email);
+
+    ApiResponse updateUser(String email, Usuario usuarioDetails);
+
+    ApiResponse getUserByEmail(String email);
+
+    ApiResponse validateToken(String token, String email);
+
+    ApiResponse loginUser(String email, String password);
 }

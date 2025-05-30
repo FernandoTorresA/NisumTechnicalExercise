@@ -1,17 +1,14 @@
 package org.example.nisumtechnicalexercise.controllers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.nisumtechnicalexercise.entities.ApiResponse;
+import org.example.nisumtechnicalexercise.entities.LoginRequest;
 import org.example.nisumtechnicalexercise.entities.Usuario;
-import org.example.nisumtechnicalexercise.helper.JwtHelper;
 import org.example.nisumtechnicalexercise.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -22,58 +19,57 @@ public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
 
-    @Autowired
-    JwtHelper jwtHelper;
+    //Se pidió un RESTful, por tanto, se hace el CRUD completo...
 
-//    Se pidió un RESTful, por tanto, se hace el CRUD completo...
-
-    //No solicitado, pero es útil para probar los cambios
+    //No solicitado, pero es útil para probar los cambios en los usuarios
     @GetMapping("/obtenerTodos")
-    public ResponseEntity<List<Usuario>> getAll() {
-        log.info("[getAllColaborador] Request recieved...");
-        List<Usuario> colaboradorList = usuarioService.getAll();
-        return ResponseEntity.ok(colaboradorList);
+    public ResponseEntity<ApiResponse> getAll() {
+        ApiResponse response = usuarioService.getAll();
+        return ResponseEntity.ok(response);
     }
 
     //1- Ingresar usuario
     @PostMapping("/ingresarUsuario")
-    public ResponseEntity<Map<String, Object>> createUser(@RequestBody Usuario usuario) {
-
-        log.info("[createUser] Request recieved...");
-        Map<String, Object> response = new HashMap<>();
-
-        //1- Guardar user...
-        usuarioService.createUser(usuario);
-
-        //2- Generar token jwt
-        String token = jwtHelper.generateToken(usuario);
-
-        //3- como lo acabo de crear... siempre está habilitado...
-        boolean isActive = true;
-
-        response.put("usuario", usuario);
-        response.put("token", "Bearer " + token);
-        response.put("isActive", isActive);
-
+    public ResponseEntity<ApiResponse> createUser(@RequestBody Usuario usuario) {
+        ApiResponse response = usuarioService.createUser(usuario);
         return ResponseEntity.ok(response);
     }
 
+    //2- Obtener usuario por email
+    @GetMapping("/obtenerUsuario")
+    public ResponseEntity<ApiResponse> getUserByEmail(@RequestParam("email") String email) {
+        ApiResponse response = usuarioService.getUserByEmail(email);
+        return ResponseEntity.ok(response);
+    }
+
+    //3- Actualizar usuario por mail
+    @PutMapping("/actualizarUsuario")
+    public ResponseEntity<ApiResponse> updateUser(@RequestParam("email") String email,
+                                                  @RequestBody Usuario usuarioDetails) {
+        ApiResponse response = usuarioService.updateUser(email, usuarioDetails);
+        return ResponseEntity.ok(response);
+    }
+
+    //4- Eliminar usuario por mail
+    @DeleteMapping("/borrarUsuario")
+    public ResponseEntity<ApiResponse> deleteUser(@RequestParam("email") String email) {
+        ApiResponse response = usuarioService.deleteUser(email);
+        return ResponseEntity.ok(response);
+    }
+
+    // validador de tokens
     @GetMapping("/validaToken")
-    public ResponseEntity<Map<String, Object>> validateToken(
+    public ResponseEntity<ApiResponse> validateToken(
             @RequestHeader("Authorization") String token,
-            @RequestParam String email) {
-
-        log.info("[validarToken] Request received...");
-
-        Map<String, Object> response = new HashMap<>();
-
-        // 1. Validar el token
-        boolean esValido = jwtHelper.validarToken(token, email);
-
-        response.put("email", email);
-        response.put("isActive", esValido);
-
+            @RequestParam("email") String email) {
+        ApiResponse response = usuarioService.validateToken(token, email);
         return ResponseEntity.ok(response);
     }
 
+    // para generar un nuevo JWT, ya que solo se estaba generando al crear al user
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest loginRequest) {
+        ApiResponse response = usuarioService.loginUser(loginRequest.getEmail(), loginRequest.getPassword());
+        return ResponseEntity.ok(response);
+    }
 }

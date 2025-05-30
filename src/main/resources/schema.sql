@@ -27,6 +27,13 @@ VALUES (1, 'Fernando Torres', 'fernando_torres@nisum.com', '12345',
        (3, 'Esteban Dido', 'esteban_dido@nisum.com', '1234567',
         '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
 
+-- test fallido con uuid
+-- INSERT INTO usuario (id, nombre, email, password, fecha_creacion, fecha_modificacion, fecha_ultimo_login)
+-- VALUES
+--     (gen_random_uuid(), 'Fernando Torres', 'fernando_torres@nisum.com', '12345', '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+--     (gen_random_uuid(), 'Alan Brito', 'alan_brito@nisum.com', '123456', '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+--     (gen_random_uuid(), 'Esteban Dido', 'esteban_dido@nisum.com', '1234567', '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
+
 INSERT INTO telefono (numero, codigo_ciudad, codigo_pais, usuario_id)
 VALUES (98765432, 1, 56, 1),
        (98765433, 2, 56, 1),

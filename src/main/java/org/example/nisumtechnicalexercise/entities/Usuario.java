@@ -7,6 +7,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -14,10 +15,15 @@ import java.util.List;
 public class Usuario {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usuario_seq")
-//    @SequenceGenerator(name = "usuario_seq", sequenceName = "usuario_seq", allocationSize = 1)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
+
+    // hsqldb me da error al inicializar y crear la tabla con gen_random_uuid(). Si fuera una base real, podría usar
+    // esta sentencia en lugar del ID de arriba
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Column(name = "id", unique = true, nullable = false)
+//    private UUID id;
 
     @Column(name = "nombre", nullable = false)
     private String nombre;
@@ -42,5 +48,4 @@ public class Usuario {
 
     @Column(name = "fecha_ultimo_login")
     private String fechaUltimoLogin;
-
 }

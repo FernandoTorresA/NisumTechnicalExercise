@@ -1,4 +1,4 @@
-package org.example.nisumtechnicalexercise.helper;
+package org.example.nisumtechnicalexercise.helpers;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
