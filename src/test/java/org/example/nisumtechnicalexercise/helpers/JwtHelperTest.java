@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 //HMAC signing keys must be SecretKey instances.
 //
 //@ExtendWith(MockitoExtension.class)
-//public class JwtHelperTest {
+public class JwtHelperTest {
 //
 //    @InjectMocks
 //    JwtHelper jwtHelper;
@@ -42,4 +42,4 @@ import static org.junit.jupiter.api.Assertions.*;
 //        invalidToken = "invalid.jwt.token";
 //    }
 //
-//}
+}

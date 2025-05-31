@@ -1,21 +1,22 @@
 package org.example.nisumtechnicalexercise.services;
 
-import org.example.nisumtechnicalexercise.entities.ApiResponse;
+import org.example.nisumtechnicalexercise.entities.RespuestaApi;
 import org.example.nisumtechnicalexercise.entities.Usuario;
+import org.springframework.http.ResponseEntity;
 
 public interface UsuarioService {
 
-    ApiResponse getAll();
+    ResponseEntity<RespuestaApi> getAll();
 
-    ApiResponse createUser(Usuario usuario);
+    ResponseEntity<RespuestaApi> createUser(Usuario usuario);
 
-    ApiResponse deleteUser(String email);
+    ResponseEntity<RespuestaApi> getUserByEmail(String email);
 
-    ApiResponse updateUser(String email, Usuario usuarioDetails);
+    ResponseEntity<RespuestaApi> updateUser(String email, Usuario usuarioDetails);
 
-    ApiResponse getUserByEmail(String email);
+    ResponseEntity<RespuestaApi> deleteUser(String email);
 
-    ApiResponse validateToken(String token, String email);
+    ResponseEntity<RespuestaApi> validateToken(String token, String email);
 
-    ApiResponse loginUser(String email, String password);
+    ResponseEntity<RespuestaApi> loginUser(String email, String password);
 }

@@ -1,6 +1,6 @@
 package org.example.nisumtechnicalexercise.services;
 
-import org.example.nisumtechnicalexercise.entities.ApiResponse;
+import org.example.nisumtechnicalexercise.entities.RespuestaApi;
 import org.example.nisumtechnicalexercise.entities.Telefono;
 import org.example.nisumtechnicalexercise.entities.Usuario;
 import org.example.nisumtechnicalexercise.helpers.JwtHelper;
@@ -15,10 +15,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -98,33 +100,36 @@ public class UsuarioServiceImplTest {
     public void testGetAllUsuariosFound() {
         when(usuarioRepository.findAll()).thenReturn(usuarios);
 
-        ApiResponse response = usuarioService.getAll();
+        ResponseEntity<RespuestaApi> response = usuarioService.getAll();
 
-        assertEquals("00", response.getCodigo());
-        assertEquals("Operación exitosa", response.getMensaje());
-        assertEquals(usuarios, response.getData());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("00", response.getBody().getCodigo());
+        assertEquals("Operación exitosa", response.getBody().getMensaje());
+        assertEquals(usuarios, response.getBody().getData());
     }
 
     @Test
     public void testGetAllUsuariosNotFound() {
         when(usuarioRepository.findAll()).thenReturn(Collections.emptyList());
 
-        ApiResponse response = usuarioService.getAll();
+        ResponseEntity<RespuestaApi> response = usuarioService.getAll();
 
-        assertEquals("03", response.getCodigo());
-        assertEquals("No se encontraron usuarios", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(204, response.getStatusCode().value());
+        assertEquals("03", response.getBody().getCodigo());
+        assertEquals("No se encontraron usuarios", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 
     @Test
     public void testGetAllDatabaseError() {
         when(usuarioRepository.findAll()).thenThrow(new RuntimeException("DB connection failed"));
 
-        ApiResponse response = usuarioService.getAll();
+        ResponseEntity<RespuestaApi> response = usuarioService.getAll();
 
-        assertEquals("01", response.getCodigo());
-        assertEquals("Error en la base de datos: DB connection failed", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(500, response.getStatusCode().value());
+        assertEquals("01", response.getBody().getCodigo());
+        assertEquals("Error en la base de datos: DB connection failed", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 
     // TESTS para createUser() ----------------------------------------------------
@@ -133,33 +138,36 @@ public class UsuarioServiceImplTest {
     public void testCreateUser_UserAlreadyExists() {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenReturn(Optional.of(usuario));
 
-        ApiResponse response = usuarioService.createUser(usuario);
+        ResponseEntity<RespuestaApi> response = usuarioService.createUser(usuario);
 
-        assertEquals("02", response.getCodigo());
-        assertEquals("El usuario ya existe", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(409, response.getStatusCode().value());
+        assertEquals("02", response.getBody().getCodigo());
+        assertEquals("El usuario ya existe", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 
     @Test
     public void testCreateUser_InvalidEmail() {
         usuario.setEmail("invalid-email");
 
-        ApiResponse response = usuarioService.createUser(usuario);
+        ResponseEntity<RespuestaApi> response = usuarioService.createUser(usuario);
 
-        assertEquals("02", response.getCodigo());
-        assertEquals("Error de validación", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals("02", response.getBody().getCodigo());
+        assertEquals("Error de validación", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 
     @Test
     public void testCreateUser_InvalidPassword() {
         usuario.setPassword("short");
 
-        ApiResponse response = usuarioService.createUser(usuario);
+        ResponseEntity<RespuestaApi> response = usuarioService.createUser(usuario);
 
-        assertEquals("02", response.getCodigo());
-        assertEquals("Error de validación", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(400, response.getStatusCode().value());
+        assertEquals("02", response.getBody().getCodigo());
+        assertEquals("Error de validación", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 
     @Test
@@ -168,21 +176,23 @@ public class UsuarioServiceImplTest {
         when(passwordEncoder.encode(usuario.getPassword())).thenReturn("encryptedPassword");
         when(jwtHelper.generateToken(usuario)).thenReturn("fake-jwt-token");
 
-        ApiResponse response = usuarioService.createUser(usuario);
+        ResponseEntity<RespuestaApi> response = usuarioService.createUser(usuario);
 
-        assertEquals("00", response.getCodigo());
-        assertEquals("Operación exitosa", response.getMensaje());
+        assertEquals(201, response.getStatusCode().value());
+        assertEquals("00", response.getBody().getCodigo());
+        assertEquals("Operación exitosa", response.getBody().getMensaje());
     }
 
     @Test
     public void testCreateUser_DatabaseError() {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenThrow(new RuntimeException("DB failed"));
 
-        ApiResponse response = usuarioService.createUser(usuario);
+        ResponseEntity<RespuestaApi> response = usuarioService.createUser(usuario);
 
-        assertEquals("01", response.getCodigo());
-        assertEquals("Error en la base de datos: DB failed", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(500, response.getStatusCode().value());
+        assertEquals("01", response.getBody().getCodigo());
+        assertEquals("Error en la base de datos: DB failed", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 
     // TESTS para getUserByEmail() ----------------------------------------------------
@@ -191,32 +201,35 @@ public class UsuarioServiceImplTest {
     public void testGetUserByEmail_UserFound() {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenReturn(Optional.of(usuario));
 
-        ApiResponse response = usuarioService.getUserByEmail(usuario.getEmail());
+        ResponseEntity<RespuestaApi> response = usuarioService.getUserByEmail(usuario.getEmail());
 
-        assertEquals("00", response.getCodigo());
-        assertEquals("Operación exitosa", response.getMensaje());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("00", response.getBody().getCodigo());
+        assertEquals("Operación exitosa", response.getBody().getMensaje());
     }
 
     @Test
     public void testGetUserByEmail_UserNotFound() {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenReturn(Optional.empty());
 
-        ApiResponse response = usuarioService.getUserByEmail(usuario.getEmail());
+        ResponseEntity<RespuestaApi> response = usuarioService.getUserByEmail(usuario.getEmail());
 
-        assertEquals("03", response.getCodigo());
-        assertEquals("Usuario no encontrado", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(404, response.getStatusCode().value());
+        assertEquals("03", response.getBody().getCodigo());
+        assertEquals("Usuario no encontrado", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 
     @Test
     public void testGetUserByEmail_DatabaseError() {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenThrow(new RuntimeException("DB failed"));
 
-        ApiResponse response = usuarioService.getUserByEmail(usuario.getEmail());
+        ResponseEntity<RespuestaApi> response = usuarioService.getUserByEmail(usuario.getEmail());
 
-        assertEquals("01", response.getCodigo());
-        assertEquals("Error en la base de datos: DB failed", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(500, response.getStatusCode().value());
+        assertEquals("01", response.getBody().getCodigo());
+        assertEquals("Error en la base de datos: DB failed", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 
     // TEST para updateUser() ----------------------------------------------------
@@ -226,11 +239,13 @@ public class UsuarioServiceImplTest {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenReturn(Optional.of(usuario));
         when(passwordEncoder.encode(usuarioActualizado.getPassword())).thenReturn("hashedPassword");
 
-        ApiResponse response = usuarioService.updateUser(usuario.getEmail(), usuarioActualizado);
+        ResponseEntity<RespuestaApi> response = usuarioService.updateUser(usuario.getEmail(), usuarioActualizado);
 
-        assertEquals("00", response.getCodigo());
-        assertEquals("Usuario actualizado correctamente", response.getMensaje());
-        Usuario updatedUser = (Usuario) response.getData();
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("00", response.getBody().getCodigo());
+        assertEquals("Usuario actualizado correctamente", response.getBody().getMensaje());
+
+        Usuario updatedUser = (Usuario) response.getBody().getData();
         assertEquals("Fernando Torres", updatedUser.getNombre());
         assertEquals("hashedPassword", updatedUser.getPassword());
         assertEquals(1, updatedUser.getTelefonos().size());
@@ -240,22 +255,24 @@ public class UsuarioServiceImplTest {
     public void testUpdateUser_UserNotFound() {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenReturn(Optional.empty());
 
-        ApiResponse response = usuarioService.updateUser(usuario.getEmail(), usuarioActualizado);
+        ResponseEntity<RespuestaApi> response = usuarioService.updateUser(usuario.getEmail(), usuarioActualizado);
 
-        assertEquals("03", response.getCodigo());
-        assertEquals("Usuario no encontrado", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(404, response.getStatusCode().value());
+        assertEquals("03", response.getBody().getCodigo());
+        assertEquals("Usuario no encontrado", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 
     @Test
     public void testUpdateUser_DatabaseError() {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenThrow(new RuntimeException("DB error"));
 
-        ApiResponse response = usuarioService.updateUser(usuario.getEmail(), usuarioActualizado);
+        ResponseEntity<RespuestaApi> response = usuarioService.updateUser(usuario.getEmail(), usuarioActualizado);
 
-        assertEquals("01", response.getCodigo());
-        assertEquals("Error en la base de datos: DB error", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(500, response.getStatusCode().value());
+        assertEquals("01", response.getBody().getCodigo());
+        assertEquals("Error en la base de datos: DB error", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 
     @Test
@@ -263,11 +280,13 @@ public class UsuarioServiceImplTest {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenReturn(Optional.of(usuario));
         usuarioActualizado.setTelefonos(null);
 
-        ApiResponse response = usuarioService.updateUser(usuario.getEmail(), usuarioActualizado);
+        ResponseEntity<RespuestaApi> response = usuarioService.updateUser(usuario.getEmail(), usuarioActualizado);
 
-        assertEquals("00", response.getCodigo());
-        assertEquals("Usuario actualizado correctamente", response.getMensaje());
-        Usuario updatedUser = (Usuario) response.getData();
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("00", response.getBody().getCodigo());
+        assertEquals("Usuario actualizado correctamente", response.getBody().getMensaje());
+
+        Usuario updatedUser = (Usuario) response.getBody().getData();
         assertEquals(2, updatedUser.getTelefonos().size());
     }
 
@@ -276,13 +295,13 @@ public class UsuarioServiceImplTest {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenReturn(Optional.of(usuario));
         usuarioActualizado.setPassword(null);
 
-        ApiResponse response = usuarioService.updateUser(usuario.getEmail(), usuarioActualizado);
+        ResponseEntity<RespuestaApi> response = usuarioService.updateUser(usuario.getEmail(), usuarioActualizado);
 
-        assertEquals("00", response.getCodigo());
-        assertEquals("Usuario actualizado correctamente", response.getMensaje());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("00", response.getBody().getCodigo());
+        assertEquals("Usuario actualizado correctamente", response.getBody().getMensaje());
 
-        Usuario updatedUser = (Usuario) response.getData();
-
+        Usuario updatedUser = (Usuario) response.getBody().getData();
         assertEquals(usuario.getPassword(), updatedUser.getPassword());
     }
 
@@ -293,11 +312,12 @@ public class UsuarioServiceImplTest {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenReturn(Optional.of(usuario));
         doNothing().when(usuarioRepository).delete(usuario);
 
-        ApiResponse response = usuarioService.deleteUser(usuario.getEmail());
+        ResponseEntity<RespuestaApi> response = usuarioService.deleteUser(usuario.getEmail());
 
-        assertEquals("00", response.getCodigo());
-        assertEquals("Usuario eliminado correctamente", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("00", response.getBody().getCodigo());
+        assertEquals("Usuario eliminado correctamente", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
 
         verify(usuarioRepository, times(1)).delete(usuario);
     }
@@ -306,11 +326,12 @@ public class UsuarioServiceImplTest {
     public void testDeleteUser_UserNotFound() {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenReturn(Optional.empty());
 
-        ApiResponse response = usuarioService.deleteUser(usuario.getEmail());
+        ResponseEntity<RespuestaApi> response = usuarioService.deleteUser(usuario.getEmail());
 
-        assertEquals("03", response.getCodigo());
-        assertEquals("Usuario no encontrado", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(404, response.getStatusCode().value());
+        assertEquals("03", response.getBody().getCodigo());
+        assertEquals("Usuario no encontrado", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
 
         verify(usuarioRepository, never()).delete(any());
     }
@@ -319,11 +340,12 @@ public class UsuarioServiceImplTest {
     public void testDeleteUser_DatabaseError() {
         when(usuarioRepository.findByEmail(usuario.getEmail())).thenThrow(new RuntimeException("DB error"));
 
-        ApiResponse response = usuarioService.deleteUser(usuario.getEmail());
+        ResponseEntity<RespuestaApi> response = usuarioService.deleteUser(usuario.getEmail());
 
-        assertEquals("01", response.getCodigo());
-        assertEquals("Error en la base de datos: DB error", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(500, response.getStatusCode().value());
+        assertEquals("01", response.getBody().getCodigo());
+        assertEquals("Error en la base de datos: DB error", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
 
         verify(usuarioRepository, never()).delete(any());
     }
@@ -336,25 +358,27 @@ public class UsuarioServiceImplTest {
         when(passwordEncoder.matches(validPassword, usuario.getPassword())).thenReturn(true);
         when(jwtHelper.generateToken(usuario)).thenReturn("fake-jwt-token");
 
-        ApiResponse response = usuarioService.loginUser(email, validPassword);
+        ResponseEntity<RespuestaApi> response = usuarioService.loginUser(email, validPassword);
 
-        assertEquals("00", response.getCodigo());
-        assertEquals("Validación de token completada", response.getMensaje());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("00", response.getBody().getCodigo());
+        assertEquals("Validación de token completada", response.getBody().getMensaje());
 
-        verify(usuarioRepository, times(1)).save(usuario); // Verificar actualización del último login
+        verify(usuarioRepository, times(1)).save(usuario);
     }
 
     @Test
     public void testLoginUser_UserNotFound() {
         when(usuarioRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        ApiResponse response = usuarioService.loginUser(email, validPassword);
+        ResponseEntity<RespuestaApi> response = usuarioService.loginUser(email, validPassword);
 
-        assertEquals("03", response.getCodigo());
-        assertEquals("Usuario no encontrado", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(404, response.getStatusCode().value());
+        assertEquals("03", response.getBody().getCodigo());
+        assertEquals("Usuario no encontrado", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
 
-        verify(usuarioRepository, never()).save(any()); // No debe actualizar el usuario
+        verify(usuarioRepository, never()).save(any());
     }
 
     @Test
@@ -362,26 +386,28 @@ public class UsuarioServiceImplTest {
         when(usuarioRepository.findByEmail(email)).thenReturn(Optional.of(usuario));
         when(passwordEncoder.matches(invalidPassword, usuario.getPassword())).thenReturn(false);
 
-        ApiResponse response = usuarioService.loginUser(email, invalidPassword);
+        ResponseEntity<RespuestaApi> response = usuarioService.loginUser(email, invalidPassword);
 
-        assertEquals("02", response.getCodigo());
-        assertEquals("Credenciales inválidas", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(401, response.getStatusCode().value());
+        assertEquals("02", response.getBody().getCodigo());
+        assertEquals("Credenciales inválidas", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
 
-        verify(usuarioRepository, never()).save(any()); // No debe actualizar el usuario
+        verify(usuarioRepository, never()).save(any());
     }
 
     @Test
     public void testLoginUser_DatabaseError() {
         when(usuarioRepository.findByEmail(email)).thenThrow(new RuntimeException("DB error"));
 
-        ApiResponse response = usuarioService.loginUser(email, validPassword);
+        ResponseEntity<RespuestaApi> response = usuarioService.loginUser(email, validPassword);
 
-        assertEquals("01", response.getCodigo());
-        assertEquals("Error en la base de datos: DB error", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(500, response.getStatusCode().value());
+        assertEquals("01", response.getBody().getCodigo());
+        assertEquals("Error en la base de datos: DB error", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
 
-        verify(usuarioRepository, never()).save(any()); // No debe actualizar el usuario
+        verify(usuarioRepository, never()).save(any());
     }
 
     // TEST para validateToken() ----------------------------------------------------
@@ -390,30 +416,34 @@ public class UsuarioServiceImplTest {
     public void testValidateToken_Success() {
         when(jwtHelper.validarToken(validToken, email)).thenReturn(true);
 
-        ApiResponse response = usuarioService.validateToken(validToken, email);
+        ResponseEntity<RespuestaApi> response = usuarioService.validateToken(validToken, email);
 
-        assertEquals("00", response.getCodigo());
-        assertEquals("Validación de token completada", response.getMensaje());
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals("00", response.getBody().getCodigo());
+        assertEquals("Validación de token completada", response.getBody().getMensaje());
     }
 
     @Test
     public void testValidateToken_InvalidToken() {
         when(jwtHelper.validarToken(invalidToken, email)).thenReturn(false);
 
-        ApiResponse response = usuarioService.validateToken(invalidToken, email);
+        ResponseEntity<RespuestaApi> response = usuarioService.validateToken(invalidToken, email);
 
-        assertEquals("00", response.getCodigo());
-        assertEquals("Validación de token completada", response.getMensaje());
+        assertEquals(401, response.getStatusCode().value());
+        assertEquals("02", response.getBody().getCodigo());
+        assertEquals("Token inválido", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 
     @Test
     public void testValidateToken_DatabaseError() {
         when(jwtHelper.validarToken(validToken, email)).thenThrow(new RuntimeException("DB error"));
 
-        ApiResponse response = usuarioService.validateToken(validToken, email);
+        ResponseEntity<RespuestaApi> response = usuarioService.validateToken(validToken, email);
 
-        assertEquals("01", response.getCodigo());
-        assertEquals("Error en la base de datos: DB error", response.getMensaje());
-        assertEquals(null, response.getData());
+        assertEquals(500, response.getStatusCode().value());
+        assertEquals("01", response.getBody().getCodigo());
+        assertEquals("Error en la base de datos: DB error", response.getBody().getMensaje());
+        assertNull(response.getBody().getData());
     }
 }
