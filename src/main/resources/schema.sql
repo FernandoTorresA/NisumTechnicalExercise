@@ -19,13 +19,13 @@ CREATE TABLE telefono
     FOREIGN KEY (usuario_id) REFERENCES usuario (id)
 );
 
-INSERT INTO usuario (id, nombre, email, password, fecha_creacion, fecha_modificacion, fecha_ultimo_login)
-VALUES (1, 'Fernando Torres', 'fernando_torres@nisum.com', '12345',
-        '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
-       (2, 'Alan Brito', 'alan_brito@nisum.com', '123456',
-        '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
-       (3, 'Esteban Dido', 'esteban_dido@nisum.com', '1234567',
-        '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
+-- INSERT INTO usuario (id, nombre, email, password, fecha_creacion, fecha_modificacion, fecha_ultimo_login)
+-- VALUES (1, 'Fernando Torres', 'fernando_torres@nisum.com', '12345',
+--         '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+--        (2, 'Alan Brito', 'alan_brito@nisum.com', '123456',
+--         '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
+--        (3, 'Esteban Dido', 'esteban_dido@nisum.com', '1234567',
+--         '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
 
 -- test fallido con uuid
 -- INSERT INTO usuario (id, nombre, email, password, fecha_creacion, fecha_modificacion, fecha_ultimo_login)
@@ -34,8 +34,8 @@ VALUES (1, 'Fernando Torres', 'fernando_torres@nisum.com', '12345',
 --     (gen_random_uuid(), 'Alan Brito', 'alan_brito@nisum.com', '123456', '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00'),
 --     (gen_random_uuid(), 'Esteban Dido', 'esteban_dido@nisum.com', '1234567', '2025-01-01 00:00:00', '2025-01-01 00:00:00', '2025-01-01 00:00:00');
 
-INSERT INTO telefono (numero, codigo_ciudad, codigo_pais, usuario_id)
-VALUES (98765432, 1, 56, 1),
-       (98765433, 2, 56, 1),
-       (98765423, 3, 57, 2),
-       (98765434, 4, 58, 3);
+-- INSERT INTO telefono (numero, codigo_ciudad, codigo_pais, usuario_id)
+-- VALUES (98765432, 1, 56, 1),
+--        (98765433, 2, 56, 1),
+--        (98765423, 3, 57, 2),
+--        (98765434, 4, 58, 3);

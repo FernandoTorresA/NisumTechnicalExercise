@@ -18,10 +18,10 @@ public class Telefono {
     private Long numero;
 
     @Column(name = "codigo_ciudad", nullable = false)
-    private Long codigo_ciudad;
+    private Long codigoCiudad;
 
     @Column(name = "codigo_pais", nullable = false)
-    private Long codigo_pais;
+    private Long codigoPais;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)

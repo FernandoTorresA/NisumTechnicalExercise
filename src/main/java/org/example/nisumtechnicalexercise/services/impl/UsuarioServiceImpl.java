@@ -7,10 +7,8 @@ import org.example.nisumtechnicalexercise.helpers.JwtHelper;
 import org.example.nisumtechnicalexercise.repositories.UsuarioRepository;
 import org.example.nisumtechnicalexercise.services.UsuarioService;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.example.nisumtechnicalexercise.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +107,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 
                 Map<String, Object> data = new HashMap<>();
                 data.put("usuario", usuario);
-                data.put("password", usuario.getPassword());
 
                 return new ApiResponse(Constants.CODE_SUCCESS, Constants.MSG_SUCCESS, data);
             } else {
@@ -121,22 +118,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public ApiResponse validateToken(String token, String email) {
-        try {
-            boolean esValido = jwtHelper.validarToken(token, email);
-
-            Map<String, Object> data = new HashMap<>();
-            data.put("email", email);
-            data.put("isActive", esValido);
-
-            return new ApiResponse(Constants.CODE_SUCCESS, Constants.MSG_TOKEN_VALIDATED, data);
-        } catch (Exception e) {
-            return new ApiResponse(Constants.CODE_DB_ERROR, Constants.MSG_DB_ERROR + ": " + e.getMessage(),
-                    null);
-        }
-    }
-
-    @Override
     public ApiResponse updateUser(String email, Usuario usuarioDetails) {
         try {
             Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
@@ -144,8 +125,16 @@ public class UsuarioServiceImpl implements UsuarioService {
                 Usuario usuario = usuarioOptional.get();
                 usuario.setNombre(usuarioDetails.getNombre());
 
+                if (usuarioDetails.getPassword() != null && !usuarioDetails.getPassword().isEmpty()) {
+                    usuario.setPassword(passwordEncoder.encode(usuarioDetails.getPassword()));
+                }
+
                 if (usuarioDetails.getTelefonos() != null && !usuarioDetails.getTelefonos().isEmpty()) {
-                    usuario.getTelefonos().clear();
+                    if (usuario.getTelefonos() == null) {
+                        usuario.setTelefonos(new ArrayList<>());
+                    } else {
+                        usuario.getTelefonos().clear();
+                    }
                     for (Telefono telefono : usuarioDetails.getTelefonos()) {
                         telefono.setUsuario(usuario);
                     }
@@ -208,6 +197,22 @@ public class UsuarioServiceImpl implements UsuarioService {
 
             return new ApiResponse(Constants.CODE_SUCCESS, Constants.MSG_TOKEN_VALIDATED, data);
 
+        } catch (Exception e) {
+            return new ApiResponse(Constants.CODE_DB_ERROR, Constants.MSG_DB_ERROR + ": " + e.getMessage(),
+                    null);
+        }
+    }
+
+    @Override
+    public ApiResponse validateToken(String token, String email) {
+        try {
+            boolean esValido = jwtHelper.validarToken(token, email);
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("email", email);
+            data.put("isActive", esValido);
+
+            return new ApiResponse(Constants.CODE_SUCCESS, Constants.MSG_TOKEN_VALIDATED, data);
         } catch (Exception e) {
             return new ApiResponse(Constants.CODE_DB_ERROR, Constants.MSG_DB_ERROR + ": " + e.getMessage(),
                     null);
