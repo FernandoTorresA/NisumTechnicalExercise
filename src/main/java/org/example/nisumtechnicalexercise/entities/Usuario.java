@@ -15,6 +15,7 @@ import java.util.UUID;
 public class Usuario {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
@@ -41,11 +42,11 @@ public class Usuario {
     // variables ocultas/internas que no van en el proceso de creación, pero sí después...
 
     @Column(name = "fecha_creacion")
-    private String fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_modificacion")
-    private String fechaModificacion;
+    private LocalDateTime fechaModificacion;
 
     @Column(name = "fecha_ultimo_login")
-    private String fechaUltimoLogin;
+    private LocalDateTime fechaUltimoLogin;
 }

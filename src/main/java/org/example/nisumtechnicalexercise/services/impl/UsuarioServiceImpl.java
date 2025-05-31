@@ -84,9 +84,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
-            usuario.setFechaCreacion(LocalDateTime.now().toString());
-            usuario.setFechaModificacion(LocalDateTime.now().toString());
-            usuario.setFechaUltimoLogin(LocalDateTime.now().toString());
+            usuario.setFechaCreacion(LocalDateTime.now());
+            usuario.setFechaModificacion(LocalDateTime.now());
+            usuario.setFechaUltimoLogin(LocalDateTime.now());
 
             usuarioRepository.save(usuario);
 
@@ -161,7 +161,7 @@ public class UsuarioServiceImpl implements UsuarioService {
                 usuario.getTelefonos().addAll(usuarioDetails.getTelefonos());
             }
 
-            usuario.setFechaModificacion(LocalDateTime.now().toString());
+            usuario.setFechaModificacion(LocalDateTime.now());
             usuarioRepository.save(usuario);
 
             return ResponseEntity.ok(new RespuestaApi(Constants.CODE_SUCCESS, Constants.MSG_USER_UPDATED, usuario));
@@ -236,7 +236,7 @@ public class UsuarioServiceImpl implements UsuarioService {
             // Generar nuevo token jwt
             String token = jwtHelper.generateToken(usuario);
 
-            usuario.setFechaUltimoLogin(LocalDateTime.now().toString());
+            usuario.setFechaUltimoLogin(LocalDateTime.now());
             usuarioRepository.save(usuario);
 
             Map<String, Object> data = new HashMap<>();

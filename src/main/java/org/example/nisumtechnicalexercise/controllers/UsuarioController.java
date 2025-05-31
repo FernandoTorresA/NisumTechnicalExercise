@@ -25,7 +25,7 @@ public class UsuarioController {
 
     //Se pidió un RESTful, por tanto, se hace el CRUD completo...
 
-    //No solicitado, pero es útil para probar los cambios en los usuarios
+    //1- No solicitado, pero es útil para probar los cambios en los usuarios
     @Operation(summary = "Obtener todos los usuarios", description = "Devuelve la lista completa de usuarios")
     @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida correctamente")
     @ApiResponse(responseCode = "204", description = "No hay usuarios en la base de datos")
@@ -35,7 +35,7 @@ public class UsuarioController {
         return usuarioService.getAll();
     }
 
-    // 1- Ingresar usuario
+    // 2- Ingresar usuario
     @Operation(summary = "Crear un usuario", description = "Registra un nuevo usuario en la base de datos")
     @ApiResponse(responseCode = "201", description = "Usuario creado correctamente")
     @ApiResponse(responseCode = "400", description = "Datos inválidos (email o contraseña incorrectos)")
@@ -46,7 +46,7 @@ public class UsuarioController {
         return usuarioService.createUser(usuario);
     }
 
-    // 2- Obtener usuario por email
+    // 3- Obtener usuario por email
     @Operation(summary = "Obtener usuario por email", description = "Busca un usuario registrado por su dirección de correo")
     @ApiResponse(responseCode = "200", description = "Usuario encontrado")
     @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
@@ -56,7 +56,7 @@ public class UsuarioController {
         return usuarioService.getUserByEmail(email);
     }
 
-    // 3- Actualizar usuario por mail
+    // 4- Actualizar usuario por mail
     @Operation(summary = "Actualizar usuario", description = "Actualiza los datos de un usuario existente")
     @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente")
     @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
@@ -67,7 +67,7 @@ public class UsuarioController {
         return usuarioService.updateUser(email, usuarioDetails);
     }
 
-    // 4- Eliminar usuario por mail
+    // 5- Eliminar usuario por mail
     @Operation(summary = "Eliminar usuario", description = "Elimina un usuario de la base de datos por email")
     @ApiResponse(responseCode = "200", description = "Usuario eliminado correctamente")
     @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
@@ -77,7 +77,7 @@ public class UsuarioController {
         return usuarioService.deleteUser(email);
     }
 
-    // 5- validador de tokens
+    // 6- validador de tokens
     @Operation(summary = "Validar token JWT", description = "Verifica si el token JWT es válido para el usuario")
     @ApiResponse(responseCode = "200", description = "Token validado correctamente")
     @ApiResponse(responseCode = "401", description = "Token inválido")
@@ -89,7 +89,7 @@ public class UsuarioController {
         return usuarioService.validateToken(token, email);
     }
 
-    // 6- para generar un nuevo JWT, ya que solo se estaba generando al crear al user
+    // 7- para generar un nuevo JWT, ya que solo se estaba generando al crear al user
     @Operation(summary = "Login de usuario", description = "Autentica un usuario y genera un nuevo JWT")
     @ApiResponse(responseCode = "200", description = "Usuario autenticado correctamente")
     @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
