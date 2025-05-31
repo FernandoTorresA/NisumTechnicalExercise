@@ -1,0 +1,207 @@
+{
+	"info": {
+		"_postman_id": "f6f81ce7-e3bd-4167-bf98-fb8c7e109401",
+		"name": "NisumTechnicalExercise",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14550166"
+	},
+	"item": [
+		{
+			"name": "obtenerTodos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/nisum/usuarios/obtenerTodos",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nisum",
+						"usuarios",
+						"obtenerTodos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ingresarUsuario",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"Alan brito\",\r\n    \"email\": \"alan_brito@nisum.com\",\r\n    \"password\": \"A123!sdfsdf\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": 98765432,\r\n            \"codigoCiudad\": 2,\r\n            \"codigoPais\": 59\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/nisum/usuarios/ingresarUsuario",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nisum",
+						"usuarios",
+						"ingresarUsuario"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "obtenerUsuario",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/nisum/usuarios/obtenerUsuario?email=alan_brito@nisum.com",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nisum",
+						"usuarios",
+						"obtenerUsuario"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "alan_brito@nisum.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "borrarUsuario",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/nisum/usuarios/borrarUsuario?email=alan_brito@nisum.com",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nisum",
+						"usuarios",
+						"borrarUsuario"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "alan_brito@nisum.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "actualizarUsuario",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nombre\": \"Alan Brito\",\r\n    \"email\": \"alan_brito@nisum.com\",\r\n    \"password\": \"A123!sdfsdf2\",\r\n    \"telefonos\": [\r\n        {\r\n            \"numero\": 98765432,\r\n            \"codigoCiudad\": 2,\r\n            \"codigoPais\": 59\r\n        },\r\n        {\r\n            \"numero\": 987654321,\r\n            \"codigoCiudad\": 21,\r\n            \"codigoPais\": 591\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/nisum/usuarios/actualizarUsuario?email=alan_brito@nisum.com",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nisum",
+						"usuarios",
+						"actualizarUsuario"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "alan_brito@nisum.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "validaToken",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbGFuX2JyaXRvQG5pc3VtLmNvbSIsImlhdCI6MTc0ODcxNjI4MiwiZXhwIjoxNzQ4NzE2MzEyfQ.0Pb_2WWE9Nso6sK_dH0lqCyaXmJU1S-Nb50OvsVc_2k",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8080/nisum/usuarios/validaToken?email=alan_brito@nisum.com",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nisum",
+						"usuarios",
+						"validaToken"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "alan_brito@nisum.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"alan_brito@nisum.com\",\r\n    \"password\": \"A123!sdfsdf\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/nisum/usuarios/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nisum",
+						"usuarios",
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
